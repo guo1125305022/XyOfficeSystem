@@ -1,0 +1,35 @@
+<VisualStudioProject>
+  <CSHARP ProjectType="Local" ProductVersion="7.10.3077" SchemaVersion="2.0" ProjectGuid="3321C5FF-DC1E-4A20-ACE2-3AEC790D55B6">
+    <Build>
+      <Settings ApplicationIcon="" AssemblyKeyContainerName="" AssemblyName="SystemTools" AssemblyOriginatorKeyFile="" DefaultClientScript="JScript" DefaultHTMLPageLayout="Grid" DefaultTargetSchema="IE50" DelaySign="false" OutputType="Library" PreBuildEvent="" PostBuildEvent="" RootNamespace="SystemTools" RunPostBuildEvent="OnBuildSuccess" StartupObject="">
+        <Config Name="Debug" AllowUnsafeBlocks="false" BaseAddress="285212672" CheckForOverflowUnderflow="false" ConfigurationOverrideFile="" DefineConstants="DEBUG;TRACE" DocumentationFile="" DebugSymbols="true" FileAlignment="4096" IncrementalBuild="false" NoStdLib="false" NoWarn="" Optimize="false" OutputPath="bin\Debug\" RegisterForComInterop="false" RemoveIntegerChecks="false" TreatWarningsAsErrors="false" WarningLevel="4" />
+        <Config Name="Release" AllowUnsafeBlocks="false" BaseAddress="285212672" CheckForOverflowUnderflow="false" ConfigurationOverrideFile="" DefineConstants="TRACE" DocumentationFile="" DebugSymbols="false" FileAlignment="4096" IncrementalBuild="false" NoStdLib="false" NoWarn="" Optimize="true" OutputPath="bin\Release\" RegisterForComInterop="false" RemoveIntegerChecks="false" TreatWarningsAsErrors="false" WarningLevel="4" />
+      </Settings>
+      <References>
+        <Reference Name="mscorlib" AssemblyName="mscorlib" HintPath="mscorlib.dll" />
+        <Reference Name="System.Configuration" AssemblyName="System.Configuration" HintPath="System.Configuration.dll" />
+        <Reference Name="System" AssemblyName="System" HintPath="System.dll" />
+        <Reference Name="System.Web" AssemblyName="System.Web" HintPath="System.Web.dll" />
+        <Reference Name="Newtonsoft.Json" AssemblyName="Newtonsoft.Json" HintPath="SqlDataBaseService.dll" />
+      </References>
+    </Build>
+    <Files>
+      <Include>
+        <File RelPath="AssemblyInfo.cs" SubType="Code" BuildAction="Compile" />
+        <File RelPath="SystemBusiness.sys\CookeUlits.cs" SubType="Code" BuildAction="Compile" />
+        <File RelPath="SystemTools\AppConfigManage.cs" SubType="Code" BuildAction="Compile" />
+        <File RelPath="SystemTools\CommandExcuter.cs" SubType="Code" BuildAction="Compile" />
+        <File RelPath="SystemTools\GuidTools.cs" SubType="Code" BuildAction="Compile" />
+        <File RelPath="SystemTools\RSAUlits.cs" SubType="Code" BuildAction="Compile" />
+        <File RelPath="SystemTools\StringTools.cs" SubType="Code" BuildAction="Compile" />
+        <File RelPath="SystemTools.webulits\SessionUlits.cs" SubType="Code" BuildAction="Compile" />
+        <File RelPath="SystemTools.security\C3DESUlits.cs" SubType="Code" BuildAction="Compile" />
+        <File RelPath="SystemTools.security\Base64Ulits.cs" SubType="Code" BuildAction="Compile" />
+        <File RelPath="SystemTools.security\DESUlits.cs" SubType="Code" BuildAction="Compile" />
+        <File RelPath="SystemTools.security\MD5Ulits.cs" SubType="Code" BuildAction="Compile" />
+        <File RelPath="SystemTools.security\SHA1Ulits.cs" SubType="Code" BuildAction="Compile" />
+        <File RelPath="SystemTools.languageTools\PinYinConverter.cs" SubType="Code" BuildAction="Compile" />
+      </Include>
+    </Files>
+  </CSHARP>
+</VisualStudioProject>

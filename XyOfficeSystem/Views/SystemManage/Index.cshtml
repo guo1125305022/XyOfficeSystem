@@ -1,0 +1,76 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutNormal.cshtml";
+}
+@*@Url.Content();*@
+<style>
+    ul {
+        list-style-type: none;
+    }
+        ul li {
+        cursor:pointer;
+        }
+    .left_main_list_div {
+    border-right:solid 1px #0094ff;
+    }
+    .right_main_list_div {
+        /*height: 100%;*/
+        border-right:solid 1px #0094ff;
+    }
+    .container-fluid {
+    height:100%;
+    padding:0px;
+    }
+    .row {
+    height:100%;
+    }
+        .row div {
+            padding:0px;
+            margin:0px;
+        } 
+        .frame_content_size {
+            width: 100%;
+            height: 100%;
+            border: none;
+            
+        }
+</style>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-2 left_main_list_div">
+            <ul id="left_menu_list">
+                <li urlAddress="@Url.Action("index","Menu")">菜单管理</li>
+                <li>权限管理</li>
+                <li>角色管理</li>
+                <li>系统配置</li>
+            </ul>
+        </div>
+        <div class="col-10 right_main_list_div">
+
+        </div>
+    </div>
+   
+</div>
+
+
+<script>
+
+    $(Init);
+    function Init() {
+        initMenuList();
+    }
+
+    function initMenuList() {
+        $("#left_menu_list li").click(ShowFunction);
+    }
+    function ShowFunction() {
+        var url = $(this).attr("urlAddress");
+        if (url == undefined && url.length < 1) {
+            return;
+        }
+        html = '<iframe class="frame_content_size" style="scrolling:no"  src="' + url + '"></iframe>';
+        $(".right_main_list_div").html(html);
+
+    }
+</script>

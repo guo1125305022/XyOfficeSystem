@@ -1,0 +1,32 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutNormal.cshtml";
+}
+
+<script src="~/Scripts/table/bootstrap-table.js"></script>
+<link href="~/Scripts/table/bootstrap-table.css" rel="stylesheet" />
+<script src="~/Scripts/table/locale/bootstrap-table-zh-CN.js"></script>
+<div></div>
+<table id="userList"
+       data-toggle="table"
+       data-cache="false" data-page-number="1"
+       data-page-size="10"
+       data-pagination="true" data-page-list="[10,20,50,100]" data-side-pagination="server">
+    <thead>
+        <tr>
+            <th data-field="LOGIN_NAME" data-align="center">登录名</th>
+            <th data-field="USER_NAME" data-align="center">姓名</th>
+            <th data-field="CREATE_TIME" data-align="center">注册时间</th>
+            <th data-field="USER_NAME" data-align="center">姓名</th>
+        </tr>
+    </thead>
+</table>
+<script>
+
+    $(Init);
+    function Init() {
+
+
+    }
+</script>

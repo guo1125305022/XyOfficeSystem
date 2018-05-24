@@ -1,0 +1,122 @@
+﻿@model SystemModels.sys.XT_TEMP_PORARY_USER
+
+@{
+    ViewBag.Title = "HomePage";
+    Layout = "~/Views/Shared/_LayoutNormal.cshtml";
+}
+<style>
+    a {
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .head_div_box {
+        height: 60px;
+        background: #808080;
+    }
+
+    .user_info_box {
+        width: 150px;
+        float: right;
+    }
+
+    .app_info_box {
+        float: left;
+    }
+
+    .page_body {
+    }
+
+    .menu_list {
+        list-style-type: none;
+    }
+
+        .menu_list li {
+            width: 128px;
+            height: 156px;
+            margin: 2px;
+            text-align: center;
+            float: left;
+            border: solid 1px #0026ff;
+        }
+
+            .menu_list li:hover {
+                background: #00ffff;
+            }
+
+            .menu_list li a {
+                min-width: 100%;
+                min-height: 24px;
+            }
+
+            .menu_list li img {
+                width: 100%;
+            }
+</style>
+<div class="head_div_box">
+    <div class="app_info_box">
+        星雨系统
+    </div>
+    <div class="user_info_box">
+        <h2>@Model.USER_NAME</h2>
+    </div>
+</div>
+<div class="page_body">
+    <ul class="menu_list">
+        <li>
+            <img src="~/Images/menu/user_currentinfo_ico.png" />
+            <br />
+            <a>个人信息</a>
+        </li>
+        <li urlAddress="@Url.Action("Index","SystemManage")">
+            <img src="~/Images/menu/system_settings.png" />
+            <br />
+            <a>系统设置</a>
+        </li>
+    </ul>
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="myModalLabel">模态框（Modal）标题</h4>
+            </div>
+            <div class="modal-body">按下 ESC 按钮退出。</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary">提交更改</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<script>
+    $(function () {
+        $('#myModal').modal({
+            keyboard: true
+        })
+    });
+</script>
+<div class="page_foot">
+
+</div>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script>
+    $(init);
+
+    function init() {
+        $(".menu_list li").click(MenuItemClick);
+    }
+    function MenuItemClick() {
+        var url = $(this).attr("urlAddress");
+        if (url == undefined || url == null || url.length < 1) {
+            return;
+        }
+        OpenUrl(url);
+    }
+
+    function OpenUrl(url) {
+        location.href = url;
+    }
+</script>

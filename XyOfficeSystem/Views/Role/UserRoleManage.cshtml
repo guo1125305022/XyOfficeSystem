@@ -1,0 +1,215 @@
+﻿
+@{
+    ViewBag.Title = "UserRoleManage";
+    Layout = "~/Views/Shared/_LayoutNormal.cshtml";
+}
+<style>
+    .column  {
+        height: 100%;
+    }
+    .row {
+        height: 100%;
+    }
+    .container-fluid {
+        height:100%;
+    }
+    li {
+    list-style:none;
+    }
+    .column {
+        border: solid 1px #007bff;
+    }
+        .column ul {
+            margin:0px;
+            padding:0px;
+            width:100%;
+            overflow-y:auto;
+        }
+        .column ul li {
+            height: 30px;
+            cursor: pointer;
+        } 
+    .column ul li:hover {
+        background: #808080;
+    }
+   
+    .column ul li.selected {
+        background: #808080;
+    }
+       
+        .column ul li div {
+            float: left;
+            cursor: pointer;
+            text-align:center;
+            width:100%;
+        }
+
+</style>
+<link href="~/Content/zTree/metroStyle/metroStyle.css" rel="stylesheet" />
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-3">
+            <ul id="role_tree" class="ztree"></ul>
+        </div>
+        <div class="col-4 column">
+            <ul id="unselected_user_list"  ondragover="dragover(event)"  ondrop="drop(event)">
+                @*<li>
+                    <input type="checkbox" /><label>测试</label>
+                </li>*@
+            </ul>
+        </div>
+        <div class="col-8">
+            <ul id="user_dep" class="ztree"></ul>
+        </div>
+        
+    </div>
+</div>
+<script src="~/Scripts/zTree/jquery.ztree.all-3.5.js"></script>
+<script src="~/Scripts/ulits/zTreeUlits.js"></script>
+<script>
+
+    function drag(event) {
+        var data = {};
+        data=$(event.target).attr("id");
+        event.dataTransfer.setData("Text", ev.target.id);
+    }
+
+    function dragover(event) {
+        event.preventDefault()
+    }
+    function drop(event) {
+        event.preventDefault();
+        var data = event.dataTransfer.getData("Text");
+        ev.target.appendChild(document.getElementById(data));
+    }
+
+    $(Init);
+    function Init() {
+        CurrentBaseAjax("GetRoles", null, LoadMenuDatas);
+        CurrentBaseAjax("GetDep", null, LoadDepDatas);
+        LoadUserInfo();
+    }
+    //加载部门
+    function LoadDepDatas(resultData) {
+        if (!resultData) {
+            return;
+        }
+        var setting = {
+            showLine: true,
+            //checkable: true,
+            select: true,
+            edit: {
+                enable: true,
+                drag: {
+                    isCopy: false,
+                    isMove: false,
+                }
+            },
+            data: {
+                simpleData: {
+                    enable: true,
+                    idKey: "Id",
+                    pIdKey: "PId",
+                    rootPId: "0"
+                }
+            },
+            callback: {
+                onClick: TreeClick,
+                //beforeRename: zTreeBeforeRename,
+                //beforeRemove: zTreeBeforeRemove,
+                //beforeDrop: zTreeBeforeDrop,
+                //onRightClick: ShowTreeMenu,
+            },
+        };
+        InitTree("#role_tree", setting, resultData);
+        getTree("role_tree").expandAll(true);
+
+    }
+
+    function LoadUserInfo() {
+        CurrentBaseAjax("GetAllUsers", null, function (resultData) {
+            if (!resultData) {
+                return;
+            }
+            var html = "";
+            for (var i = 0; i < resultData.length; i++) {
+                html += CreateUserItem(resultData[i]);
+            }
+            $("#unselected_user_list").html(html);
+            $("#unselected_user_list li").click(function () {
+                if ($(this).hasClass("selected")) {
+                    $(this).removeClass("selected")
+                } else {
+                    $(this).addClass("selected")
+                }
+            });
+        });
+    }
+    
+    function CreateUserItem(userInfo) {
+        var html = "";
+        html += "<li id='" + userInfo.ID + "' draggable='true' ondragstart='drag(event)' >";
+        html += userInfo.USER_NAME;
+        html += "</li>";
+        return html;
+    }
+
+    ///加载树
+    function LoadMenuDatas(data) {
+        if (!data) {
+            return;
+        }
+        var setting = {
+            showLine: true,
+            //checkable: true,
+            select: true,
+            edit: {
+                enable: true,
+                drag: {
+                    isCopy: false,
+                    isMove: true
+                }
+            },
+            data: {
+                simpleData: {
+                    enable: true,
+                    idKey: "Id",
+                    pIdKey: "PId",
+                    rootPId: "0"
+                }
+            },
+            callback: {
+                onClick: TreeClick,
+                //beforeRename: zTreeBeforeRename,
+                //beforeRemove: zTreeBeforeRemove,
+                //beforeDrop: zTreeBeforeDrop,
+                //onRightClick: ShowTreeMenu,
+            },
+        };
+        InitTree("#role_tree", setting, data);
+        getTree("role_tree").expandAll(true);
+    }
+
+    ///角色被单击时切换角色下的用户
+    function TreeClick(event, treeId, treeNode) {
+        var data = {};
+        data.roleId = treeId.id;
+        CurrentBaseAjax(data, "GetRoleUser", LoadRoleUsers, function () { });    
+    }
+
+    ///加载加载角色用户
+    function LoadRoleUsers(resultData) {
+        var html = "";
+        if (!resultData) {
+            $("#selected_user_list").html("");
+            return;
+        }
+        for (var i = 0; i < resultData.length; i++) {
+            html += CreateUserItem(resultData[i]);
+        }
+        $("#selected_user_list").html(html);
+        
+    }
+
+
+</script>

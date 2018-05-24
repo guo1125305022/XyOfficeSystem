@@ -1,0 +1,438 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutNormal.cshtml";
+}
+
+<style>
+
+
+
+    ul {
+        list-style-type: none;
+    }
+
+    .div_tree_box {
+        margin-top: 10px;
+        height: 100%;
+    }
+
+        .div_tree_box button {
+            width: 50px;
+            height: 25px;
+            line-height: 25px;
+            font-weight: 100;
+            padding: 0px;
+        }
+
+    /*.ztree li a {
+        width:100%;
+    }*/
+
+
+    .menu_item_info {
+        width: 100%;
+        margin-top: 20px;
+    }
+
+        .menu_item_info label {
+            float: left;
+            border: none;
+            width: initial;
+            margin-right: 0px;
+            width: 100px;
+            background: rgba(0,0,0,0);
+            color: #000000;
+            padding: initial;
+        }
+
+        .menu_item_info input[type=text] {
+            width: 300px;
+        }
+
+    .right_content {
+        width: 400px;
+        /*height: 400px;*/
+        margin-top: 20px;
+    }
+
+    .content_title {
+        height: 40px;
+        color: #eaeaea;
+        border-bottom: dashed 1px #808080;
+        line-height: 40px;
+        padding-left: 10px;
+    }
+
+    .menu_item_info button.submit {
+        display: block;
+        width: 200px;
+        margin: auto;
+        margin-top: 20px;
+    }
+    /*.curSelectedNode {
+    height:100px;
+    }*/
+    .menu_icon li {
+        float: left;
+    }
+
+        .menu_icon li:hover {
+            background: rgba(251, 79, 153, 0.72);
+        }
+
+        .menu_icon li img {
+            width: 85px;
+            height: 85px;
+        }
+
+        .menu_icon li.selected {
+            background: #0094ff;
+        }
+
+    .container-fluid {
+        height: 98%;
+    }
+
+    .row {
+        height: 100%;
+    }
+
+    .column {
+        height: 100%;
+    }
+
+    .tree_action_btn {
+        margin-left: 10px;
+    }
+
+    .login-dialog .modal-dialog {
+        width: 300px;
+    }
+
+    .tree_right_menu {
+        position: absolute;
+        visibility: hidden;
+        top: 0;
+        background-color: #555;
+        text-align: left;
+        padding: 2px;
+    }
+</style>
+<link href="~/Content/zTree/metroStyle/metroStyle.css" rel="stylesheet" />
+@*<link href="~/Content/zTree/zTree.css" rel="stylesheet" />*@
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-3 column">
+            <div class="div_tree_box">
+                <div class="tree_action_btn">
+                    <button type="button" class="btn btn-primary" id="menu_add">添加</button>
+                    <button type="button" class="btn btn-info" id="menu_up">上移</button>
+                    <button type="button" class="btn btn-info" id="menu_down">下移</button>
+                    <button type="button" class="btn btn-danger" id="menu_del">删除</button>
+                </div>
+
+                <ul id="role_tree" class="ztree"></ul>
+            </div>
+        </div>
+        <div class="col-9 column">
+            <div class="content_title">角色编辑</div>
+            <div class="right_content">
+                <form class="menu_info" role="form">
+                    <div class="menu_item_info">
+                        <label for="firstname" class="form-control">角色名称：</label>
+                        <input type="text" class="form-control" id="menu_name" placeholder="">
+                    </div>
+                    <div class="menu_item_info">
+                        <button type="button" id="save_menu_info" class="btn btn-primary submit">保存</button>
+                    </div>
+                </form>
+            </div>
+            <div>
+                @*<ul class="menu_icon">
+                    @{
+                        List<string> icos = ViewBag.MenuIcos;
+                        foreach (string path in icos)
+                        {
+                            <li path="@path"><img src="@Url.Content(path)" /></li>
+                        }
+                    }
+                </ul>*@
+            </div>
+        </div>
+    </div>
+</div>
+<div class="tree_right_menu">
+    <div></div>
+    <div>
+        <ul>
+            <li>展开</li>
+            <li>收缩</li>
+            <li>删除</li>
+        </ul>
+    </div>
+</div>
+<script src="~/Scripts/zTree/jquery.ztree.all-3.5.js"></script>
+<script src="~/Scripts/ulits/zTreeUlits.js"></script>
+<script>
+
+    $(init);
+    function init() {
+        //BootstrapDialog.show({
+        //    message: 'Hi Apple!'
+        //});
+
+        InitMenus();
+        $("#save_menu_info").click(AddMenu);
+        $("#menu_add").click(function () {
+            $(".menu_info input[type=text]").val("");
+        });
+        $("#menu_del").click(DeleteMenu);
+    }
+
+    //删除菜单节点
+    function DeleteMenu() {
+        action = "DeleteMenu";
+        var node = getTreeSingleSelected("role_tree");
+        if (node == null) {
+            toastr.info("请选择有效的节点!");
+            return;
+        }
+        var id = node.Id;
+        var data = {};
+        data.menuId = id;
+        CurrentBaseAjax(action, data, function (resultData) {
+            if (resultData == true) {
+                toastr.success("菜单删除成功");
+                removeNode(node);
+            } else {
+                toastr.error("菜单删除失败");
+            }
+
+        }, function () {
+            toastr.error("菜单删除失败");
+        });
+    }
+
+    function InitMenus() {
+        $(".menu_icon li").click(function () {
+            $(".menu_icon li").removeClass("selected");
+            var path = $(this).attr("path");
+            var name = "";
+            var startIndex = path.lastIndexOf("/");
+            name = path.substring(startIndex + 1, path.length);
+            startIndex = name.lastIndexOf(".");
+            name = name.substring(0, startIndex);
+            $("#menu_ico").val(name).attr("path", path);
+            $(this).addClass("selected");
+        });
+        CurrentBaseAjax("GetRoles", null, LoadMenuDatas);
+    }
+
+    function LoadMenuDatas(data) {
+        if (!data) {
+            return;
+        }
+        var setting = {
+            showLine: true,
+            checkable: true,
+            select: true,
+            edit: {
+                enable: true,
+                drag: {
+                    isCopy: false,
+                    isMove: true
+                }
+            },
+            data: {
+                simpleData: {
+                    enable: true,
+                    idKey: "Id",
+                    pIdKey: "PId",
+                    rootPId: "0"
+                }
+            },
+            callback: {
+                onClick: MenuTreeClick,
+                beforeRename: zTreeBeforeRename,
+                beforeRemove: zTreeBeforeRemove,
+                beforeDrop: zTreeBeforeDrop,
+                onRightClick: ShowTreeMenu,
+            },
+        };
+        InitTree("#role_tree", setting, data);
+        getTree("role_tree").expandAll(true);
+    }
+
+    function ShowTreeMenu(event, treeId, treeNode) {
+        //var x = event.clientX;
+        //var y = event.clientY;
+        //y += document.body.scrollTop;
+        //x += document.body.scrollLeft;
+        //$(".tree_right_menu").css({ "top": y + "px", "left": x + "px", "visibility": "visible" });
+
+        $("body").bind("mousedown", onBodyMouseDown);
+    }
+    function onBodyMouseDown(event) {
+        if (!(event.target.id == "rMenu" || $(event.target).parents("#rMenu").length > 0)) {
+            $(".tree_right_menu").css({ "visibility": "hidden" });
+        }
+        $("body").unbind("mousedown");
+    }
+
+
+    //节点删除
+    function zTreeBeforeRemove(treeId, treeNode) {
+        var id = treeNode.Id;
+        var data = {};
+        data.menuId = id;
+        CurrentBaseAjax("DeleteMenu", data, function (resultData) {
+            if (resultData == true) {
+                toastr.success("菜单删除成功");
+                removeNode("role_tree", treeNode);
+            } else {
+                toastr.error("菜单删除失败");
+                InitMenus();
+            }
+
+        }, function () {
+            toastr.error("菜单删除失败");
+            InitMenus();
+        });
+        return true;
+    }
+    ///节点移动时
+    function zTreeBeforeDrop(treeId, treeNodes, targetNode, moveType) {
+        var menus = new Array();
+        var actionType = function () {
+            if (moveType == "inner") {
+                return "MoveToTargetChilder";
+            } else {
+                return "MoveSort";
+            }
+        };
+        var isMoveSort = treeNodes[0].PId == targetNode.PId;
+            var index = getTree("role_tree").getNodeIndex(targetNode);
+            for (var i = 0; i < treeNodes.length; i++) {
+                var item = treeNodes[i];
+                var moveItem = Array();
+                var parendId = item.PId;
+                moveItem.push(item.Id);
+                var sort = targetNode.getIndex();
+                if (moveType == "inner") {
+                    parendId = targetNode.Id;
+                    if (targetNode.children) {
+                        sort = targetNode.children.length + i + 1;
+                    } else {
+                        sort = i;
+                    }
+                } else {
+                    if (item.PId == targetNode.Id) {
+                        sort = 0 + i;
+                    } else {
+                        sort = targetNode.getIndex();
+                    }
+                }
+                moveItem.push(parendId);
+                moveItem.push(sort);
+                menus.push(moveItem);
+            }
+            var data = {};
+            data.treeMenus = JSON.stringify(menus);
+            CurrentBaseAjax("menuMove", data, function (resultData) { }, function () {
+                if (resultData || resultData[0] == false) {
+                    InitMenus();
+                }
+            });
+            return true;
+
+        //alert("treeNodes:" + treeNodes[0].PId + "\n targetNode:" + targetNode.PId);
+        //return !(targetNode == null || (moveType != "inner" && !targetNode.parentTId));
+    }
+
+    ///节点重命名
+    function zTreeBeforeRename(treeId, treeNode, newName, isCancel) {
+        if (newName.length < 1) {
+            toastr.error("新名称不能为空");
+            return false;
+        }
+        var xt_menu = {};
+        xt_menu.ID = treeNode.Id;
+        xt_menu.MENU_NAME = newName;
+        xt_menu.MENU_URL = treeNode.Attribute.MENU_URL;
+        xt_menu.PARENT_ID = treeNode.PId;
+        xt_menu.ICON = treeNode.Attribute.ICON ? ico : "";
+        xt_menu.SORT = treeNode.Attribute.SORT ? treeNode.Attribute.SORT : 0;
+        saveMenu("modityMenn", xt_menu, function (resultData) {
+            if (!resultData) {
+                toastr.error("角色名称修改失败");
+                InitMenus();
+                return;
+            }
+            if (resultData[0] == true) {
+                toastr.success("角色名称修改成功");
+                return;
+            }
+            toastr.error(resultData[1]);
+        }
+            , function () {
+                toastr.error("角色名称修改失败");
+                InitMenus();
+            });
+        return true;
+    }
+    ///节点单击
+    function MenuTreeClick(event, treeId, treeNode) {
+        action = "Modifity";
+        $("#menu_name").val(treeNode.name);
+        $("#menu_addr").val(treeNode.at)
+        //alert(treeNode.tId + treeNode.name);
+    }
+
+
+    //保存添加菜单
+    function AddMenu() {
+        var name = $("#menu_name").val();
+        var addr = $("#menu_addr").val();
+        if (name.length < 1) {
+            toastr.info("角色名称不能为空");
+            return;
+        }
+        var node = getTreeSingleSelected("#role_tree");
+        if (!node) {
+            toastr.info("请选择有效的节点");
+            return;
+        }
+
+        var id = node.Id;
+        if (id == "-1") {
+            id = '0';
+        }
+        var xt_role = {};
+        xt_role.ROLE_NAME = name;
+        xt_role.PARENT_ID = id;
+        saveMenu("AddRole", xt_role, function (resultData) {
+            if (!resultData) {
+                toastr.error("添加新角色失败");
+                return;
+            }
+            if (resultData[0] == true) {
+                addNodes("role_tree",resultData[1]);
+                toastr.success("添加新角色成功");
+            } else {
+                toastr.error("添加新角色失败");
+            }
+        }, function () {
+            toastr.error("添加新角色失败");
+        });
+    }
+    //保存菜单
+    function saveMenu(action, menu, surccess, error) {
+        var data = {};
+        data.xt_role = JSON.stringify(menu);
+        CurrentBaseAjax(action, data, surccess, error);
+
+    }
+</script>
+

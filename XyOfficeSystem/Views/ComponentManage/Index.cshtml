@@ -1,0 +1,132 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutNormal.cshtml";
+}
+<style>
+    ul li {
+        list-style-type: none;
+    }
+
+    .component_list {
+    }
+
+    .component_list_item {
+        width: 300px;
+        height: 260px;
+    }
+
+        .component_list_item .preview_img {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            float: left;
+        }
+
+    .preview_img img {
+        width: 100%;
+        height: 100%;
+    }
+
+
+
+    .component_list_item .more_info {
+        overflow: hidden;
+        position: absolute;
+        width: 300px;
+        height: 260px;
+        background: rgba(33, 33, 33, 0.38);
+        visibility: hidden;
+        border-radius: 5px;
+    }
+
+    input.form-control {
+        width: 120px;
+        display: inline-block
+    }
+
+    .fix_head {
+        position: fixed;
+        z-index: 100;
+        height: 80px;
+        width: 100%;
+        background: #ffffff;
+    }
+
+    .component_content {
+    }
+
+    .component_list li {
+        float: left;
+        margin: 10px;
+        border: solid 1px rgba(128, 128, 128, 0.00);
+    }
+
+        .component_list li:hover {
+            border: solid 1px #00ff21;
+            border-radius:5px;
+        }
+
+            .component_list li:hover .more_info {
+                visibility: visible;
+            }
+</style>
+<div class="container-fluid">
+    <div class="row ">
+        <div class="col-12">
+            <div class="fix_head">
+                <span>组件名称：<input type="text" class="form-control" /><input type="button" class="Button" value="搜索" /></span>
+            </div>
+
+        </div>
+    </div>
+    <div class="row component_content">
+        <div class="col-12">
+            <div style="height:80px"></div>
+            <ul class="component_list"></ul>
+        </div>
+    </div>
+</div>
+<script>
+    $(Init());
+    function Init() {
+        LoadTemplate();
+
+    }
+
+    //加载所有网页模板
+    function LoadTemplate() {
+        CurrentBaseAjax("Get_all_Templates", null, ResolveData, function () {
+        });
+    }
+
+    function ResolveData(result) {
+        if (!result) {
+            return;
+        }
+        var html = "";
+        for (var i = 0; i < 10; i++) {
+            html += CreateItem(result[i]);
+        }
+        $(".component_list").html(html);
+        console.log("数据请求结束");
+    }
+    function CreateItem() {
+        var html = "";
+
+        html += "<li>";
+        html += "   <div class='component_list_item'>";
+        html += "          <div class='preview_img'>";
+        html += "            <img src='" + getRootPath() + "Images/menu/system_settings.png' />";
+        html += "          </div>"; 12
+        html += "            <div class='more_info'>";
+        html += "             <span>组件名称：</span>";
+        html += "             <br />  ";
+
+        html += "             <span>组件版本：</span>";
+        html += "         </div>";
+        html += "     </div>";
+        html += "</li>";
+        return html;
+    }
+</script>
